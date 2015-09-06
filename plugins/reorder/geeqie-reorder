@@ -1,12 +1,54 @@
-#!/bin/bash
-
+#!/usr/bin/perl
 # helper script to reorder files by changing timestamps (for sort by date)
 
-#timestamp=`date +%s`
-timestamp=`stat --printf="%Y\n" "$1"`
+use File::Basename;
+use strict;
 
-# iterate over files on commandline
-for file in "$@" ; do
-    touch --date=@$timestamp "$file"
-    timestamp=$[$timestamp + 1]
-done
+sub get_timestamp
+{
+    my ($f) = @_;
+    return (stat $f)[9];
+}
+
+my @files = @ARGV;		# files to reorder
+my $nfiles = @files;
+my %files;
+foreach my $file (@files)  {    $files{$file} = 1;   }
+
+my @all_files = glob(dirname($files[0]) . "/*.*");
+my %timestamps;
+foreach my $f (@all_files)    {   $timestamps{$f} = get_timestamp($f);   }
+my @all_files_sorted = sort { $timestamps{$a} <=> $timestamps{$b}; } @all_files;
+
+my $timestamp=$timestamps{$files[0]};			# first timestamp to use
+my $last_timestamp=$timestamp + $nfiles - 1;		# last  timestamp to use
+
+sub find_timestamp_clashes
+{
+    my ($newer, $older) = @_;
+    my @res;
+    foreach my $f (@all_files_sorted)
+    {
+	if (!$files{$f} && $timestamps{$f} >= $newer && $timestamps{$f} <= $older)
+	{  push(@res, $f);  }
+    }
+    return @res;
+}
+
+# resolve timestamp clashes
+my @clashes;
+while (@clashes = find_timestamp_clashes($timestamp, $last_timestamp))
+{
+    foreach my $f (@clashes)
+    {
+	push(@files, $f);   $files{$f} = 1;   $nfiles++;
+	$last_timestamp++;
+    }
+}
+
+foreach my $f (@files)
+{
+#    print "touch -d \@$timestamp $f\n";
+    utime($timestamp, $timestamp, $f);
+    $timestamp++;
+}
