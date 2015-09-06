@@ -1,0 +1,22 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Reorder Files
+Comment=Reorder selected files by changing timestamp (for sort by date)
+
+# call the helper script
+Exec=geeqie-reorder %F
+
+# Desktop files that are usable only in Geeqie should be marked like this:
+Categories=X-Geeqie;
+OnlyShowIn=X-Geeqie;
+
+# Show in popup menu
+#X-Geeqie-Menu-Path=PopupMenu
+X-Geeqie-Menu-Path=FileMenu/FileOpsSection
+
+# Shortcut
+#X-Geeqie-Hotkey=
+
+# It can be made verbose
+# X-Geeqie-Verbose=true
