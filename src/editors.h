@@ -50,6 +50,7 @@ struct _EditorDescription {
 	EditorFlags flags;
 	gboolean hidden;	/* explicitly hidden, shown in configuration dialog */
 	gboolean ignored;	/* not interesting, do not show at all */
+        gboolean show_in_popup_menu;
 };
 
 #define EDITOR_ERRORS(flags) ((flags) & EDITOR_ERROR_MASK)

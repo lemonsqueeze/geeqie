@@ -18,6 +18,7 @@
 gpointer submenu_item_get_data(GtkWidget *menu);
 
 GtkWidget *submenu_add_edit(GtkWidget *menu, GtkWidget **menu_item, GCallback func, gpointer data, GList *fd_list);
+void submenu_add_popmenu_edit(GtkWidget *menu, GCallback func, gpointer data, GList *fd_list);
 
 gchar *sort_type_get_text(SortType method);
 GtkWidget *submenu_add_sort(GtkWidget *menu, GCallback func, gpointer data,

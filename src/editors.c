@@ -296,6 +296,8 @@ gboolean editor_read_desktop_file(const gchar *path)
 	editor->menu_path = g_key_file_get_string(key_file, DESKTOP_GROUP, "X-Geeqie-Menu-Path", NULL);
 	if (!editor->menu_path) editor->menu_path = g_strdup("EditMenu/ExternalMenu");
 
+	editor->show_in_popup_menu = g_key_file_get_boolean(key_file, DESKTOP_GROUP, "X-Geeqie-PopupMenu", NULL);
+
 	editor->hotkey = g_key_file_get_string(key_file, DESKTOP_GROUP, "X-Geeqie-Hotkey", NULL);
 
 	editor->comment = g_key_file_get_string(key_file, DESKTOP_GROUP, "Comment", NULL);

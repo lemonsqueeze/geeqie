@@ -69,7 +69,7 @@ static void edit_item_destroy_cb(GtkWidget *widget, gpointer data)
 	g_free(data);
 }
 
-static void add_edit_items(GtkWidget *menu, GCallback func, GList *fd_list)
+static void add_edit_items(GtkWidget *menu, GCallback func, GList *fd_list, gboolean for_popup_menu)
 {
 	GList *editors_list = editor_list_get();
 	GList *work = editors_list;
@@ -82,6 +82,8 @@ static void add_edit_items(GtkWidget *menu, GCallback func, GList *fd_list)
 
 		if (fd_list && EDITOR_ERRORS(editor_command_parse(editor, fd_list, FALSE, NULL)))
 			active = FALSE;
+		if (for_popup_menu && !editor->show_in_popup_menu)
+		        active = FALSE;
 
 		if (active)
 			{
@@ -110,13 +112,20 @@ GtkWidget *submenu_add_edit(GtkWidget *menu, GtkWidget **menu_item, GCallback fu
 
 	submenu = gtk_menu_new();
 	g_object_set_data(G_OBJECT(submenu), "submenu_data", data);
-	add_edit_items(submenu, func, fd_list);
+	add_edit_items(submenu, func, fd_list, FALSE);
 
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
 
 	if (menu_item) *menu_item = item;
 
 	return submenu;
+}
+
+/* Add editors that should be displayed directly in the popup menu */
+void submenu_add_popmenu_edit(GtkWidget *menu, GCallback func, gpointer data, GList *fd_list)
+{
+	g_object_set_data(G_OBJECT(menu), "submenu_data", data);    
+        add_edit_items(menu, func, fd_list, TRUE);
 }
 
 /*
